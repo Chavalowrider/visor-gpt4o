@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111">
+  <title>GPT-4o Visor</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+    #time, #counter {
+      font-size: 40px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .sumar { background-color: #2196f3; color: white; }
+    .reset { background-color: #f44336; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Visor GPT-4o – Ciclo de 3h</h1>
+  <div id="time">Tiempo: 00:00:00</div>
+  <div id="counter">Mensajes: 0 / 80</div>
+  <button class="sumar" onclick="sumarMensaje()">+1 Mensaje</button>
+  <button class="reset" onclick="reiniciar()">Reiniciar Ciclo</button>
+
+  <script>
+    let start = new Date();
+    let usados = 0;
+    const max = 80;
+
+    function actualizarTiempo() {
+      const ahora = new Date();
+      const transcurrido = new Date(ahora - start);
+      const h = String(transcurrido.getUTCHours()).padStart(2, '0');
+      const m = String(transcurrido.getUTCMinutes()).padStart(2, '0');
+      const s = String(transcurrido.getUTCSeconds()).padStart(2, '0');
+      document.getElementById("time").textContent = `Tiempo: ${h}:${m}:${s}`;
+    }
+
+    function sumarMensaje() {
+      if (usados < max) {
+        usados++;
+        document.getElementById("counter").textContent = `Mensajes: ${usados} / ${max}`;
+      } else {
+        alert("¡Límite de mensajes alcanzado!");
+      }
+    }
+
+    function reiniciar() {
+      if (confirm("¿Reiniciar contador y tiempo?")) {
+        usados = 0;
+        start = new Date();
+        document.getElementById("counter").textContent = `Mensajes: 0 / ${max}`;
+      }
+    }
+
+    setInterval(actualizarTiempo, 1000);
+    actualizarTiempo();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
+</body>
+</html>
